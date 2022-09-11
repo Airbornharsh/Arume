@@ -54,7 +54,7 @@ const Chat = () => {
 
   return (
     <div className="relative">
-      <ul className="flex flex-col w-[80vw] ">
+      <ul className="flex flex-col w-[80vw] h-[calc(100vh-9rem)] overflow-scroll">
         {messages.map((message, index) => {
           return (
             <li key={index} className="p-2 pl-4 my-2 rounded-sm bg-slate-600">

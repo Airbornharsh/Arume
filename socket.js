@@ -1,8 +1,8 @@
 let io;
 
 module.exports = {
-  init: (tempIo) => {
-    io = tempIo;
+  init: (httpServer) => {
+    io = require("socket.io")(httpServer);
     return io;
   },
 

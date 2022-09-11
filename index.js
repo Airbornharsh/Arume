@@ -29,26 +29,27 @@ app.use("*", (req, res) => {
 
 DbConnect();
 
-// const server = app.listen(process.env.PORT, () => {
-//   console.log(`Server Started at ${process.env.PORT}`);
-// });
+const server = app.listen(process.env.PORT, () => {
+  console.log(`Server Started at ${process.env.PORT}`);
+});
 
-// const io = require("./socket").init(server);
-// const data = io.on("connection", (socket) => {
-//   console.log("Client Connected");
-// });
+const io = require("./socket").init(server);
+const data = io.on("connection", (socket) => {
+  console.log("Client Connected");
+});
+
 // var clients = 0;
 
-require("./socket").init(io);
+// require("./socket").init(io);
 
-io.on("connect", (socket) => {
-  console.log("Client Connected");
+// io.on("connect", (socket) => {
+//   console.log("Client Connected");
 
-  socket.on("disconnect", () => {
-    console.log("Client Disconnected");
-  });
-});
+//   socket.on("disconnect", () => {
+//     console.log("Client Disconnected");
+//   });
+// });
 
-http.listen(process.env.PORT, () => {
-  console.log("listening on localhost:4000");
-});
+// http.listen(process.env.PORT, () => {
+//   console.log("listening on localhost:4000");
+// });

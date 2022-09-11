@@ -13,7 +13,7 @@ const Chat = () => {
   };
 
   useEffect(() => {
-    const socket = openSocket("http://localhost:4000");
+    const socket = openSocket(window.localStorage.getItem("arume-backend-uri"));
     socket.on("messages", (data) => {
       if (data.action === "create") {
         console.log(data.message.message);
@@ -26,7 +26,7 @@ const Chat = () => {
     e.preventDefault();
 
     try {
-      const data = await axios.post(
+      await axios.post(
         `${window.localStorage.getItem("arume-backend-uri")}/message`,
         {
           message: message,
@@ -39,7 +39,6 @@ const Chat = () => {
           },
         }
       );
-      console.log(data.data);
     } catch (e) {
       console.log(e);
     }
@@ -48,9 +47,11 @@ const Chat = () => {
   return (
     <div className="relative">
       <ul className="flex flex-col w-[80vw] ">
-        {messages.map((message) => {
+        {messages.map((message, index) => {
           return (
-            <li className="p-2 pl-4 my-2 rounded-sm bg-slate-600">{message}</li>
+            <li key={index} className="p-2 pl-4 my-2 rounded-sm bg-slate-600">
+              {message}
+            </li>
           );
         })}
       </ul>

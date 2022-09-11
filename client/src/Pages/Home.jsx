@@ -17,7 +17,6 @@ const Home = () => {
           communityId: communityId,
         }
       );
-      console.log(data.data);
       window.localStorage.setItem("arume-accessToken", data.data);
       Navigate("/chat");
     } catch (e) {
@@ -27,7 +26,7 @@ const Home = () => {
 
   return (
     <div className="w-[80vw] max-w-[70rem] flex justify-center items-center h-[calc(100vh-10rem)]">
-      <form className="flex-col flex items-center">
+      <form className="flex flex-col items-center">
         <div className="flex flex-col">
           <label htmlFor="Community">Community</label>
           <input
@@ -38,6 +37,7 @@ const Home = () => {
             }}
             className="h-8 max-w-[20rem] text-[0.9rem] w-[85vw] text-slate-600 px-2"
             placeholder="Enter Your Community"
+            autoFocus
           />
         </div>
         <button

@@ -6,21 +6,27 @@ import { useEffect } from "react";
 
 const Chat = () => {
   const [message, setMessage] = useState("");
+  const [socket, setSocket] = useState("");
   const [messages, setMessages] = useState([]);
 
   const validateForm = () => {
     return message.length > 0;
   };
 
-  useEffect(() => {
-    const socket = openSocket(window.localStorage.getItem("arume-backend-uri"));
+  if (socket) {
     socket.on("messages", (data) => {
       if (data.action === "create") {
-        console.log(data.message.message);
         setMessages([...messages, data.message.message]);
       }
     });
-  }, [messages]);
+  }
+
+  useEffect(() => {
+    const tempSocket = openSocket(
+      window.localStorage.getItem("arume-backend-uri")
+    );
+    setSocket(tempSocket);
+  }, []);
 
   const AddMessage = async (e) => {
     e.preventDefault();
@@ -39,6 +45,8 @@ const Chat = () => {
           },
         }
       );
+
+      setMessage("");
     } catch (e) {
       console.log(e);
     }
@@ -64,6 +72,7 @@ const Chat = () => {
           }}
           className="h-8 max-w-[20rem] text-[0.9rem] w-[85vw] text-slate-600 px-2"
           placeholder="Enter Your Message"
+          autoFocus
         />
         <button
           className="bg-slate-300 text-slate-700 px-3 h-8 max-w-[5rem] rounded-sm "

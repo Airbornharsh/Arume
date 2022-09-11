@@ -4,7 +4,8 @@ import RoutesContainer from "./Routes";
 function App() {
   window.localStorage.setItem(
     "arume-backend-uri",
-    "https://arume.herokuapp.com"
+    // "https://arume.herokuapp.com"
+    "http://localhost:4000"
   );
 
   return (

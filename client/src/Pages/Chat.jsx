@@ -3,11 +3,14 @@ import openSocket from "socket.io-client";
 import axios from "axios";
 import { useState } from "react";
 import { useEffect } from "react";
+import { useParams } from "react-router-dom";
 
 const Chat = () => {
   const [message, setMessage] = useState("");
   const [socket, setSocket] = useState("");
   const [messages, setMessages] = useState([]);
+
+  const params = useParams();
 
   const validateForm = () => {
     return message.length > 0;
@@ -15,8 +18,10 @@ const Chat = () => {
 
   if (socket) {
     socket.on("messages", (data) => {
-      if (data.action === "create") {
-        setMessages([...messages, data.message.message]);
+      console.log(data);
+      console.log(params.id);
+      if (data.action === "create" && data.communityId === params.id) {
+        setMessages([...messages, data.message]);
       }
     });
   }

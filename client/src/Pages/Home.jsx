@@ -14,11 +14,11 @@ const Home = () => {
       const data = await axios.post(
         `${window.localStorage.getItem("arume-backend-uri")}/community`,
         {
-          communityId: communityId,
+          communityId: communityId.toLowerCase().trim(),
         }
       );
       window.localStorage.setItem("arume-accessToken", data.data);
-      Navigate("/chat");
+      Navigate(`/chat/${communityId}`);
     } catch (e) {
       console.log(e);
     }

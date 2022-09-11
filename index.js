@@ -1,20 +1,20 @@
 require("dotenv").config();
-// const express = require("express");
+const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const Router = require("./src/Routes");
 const DbConnect = require("./src/config/Database_config");
 
-var express = require("express");
-var app = express();
-var http = require("http").createServer(app);
-var io = require("socket.io")(http, {
-  cors: {
-    origin: "*",
-  },
-});
+// var express = require("express");
+// var app = express();
+// var http = require("http").createServer(app);
+// var io = require("socket.io")(http, {
+//   cors: {
+//     origin: "*",
+//   },
+// });
 
-// const app = express();
+const app = express();
 app.use(cors());
 
 app.use(express.json());

@@ -1,25 +1,32 @@
 import React from "react";
-import openSocket from "socket.io-client";
+import { io } from "socket.io-client";
 import axios from "axios";
 import { useState } from "react";
 import { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useContext } from "react";
+import Context from "../Context/Context";
+import { useRef } from "react";
 
 const Chat = () => {
   const [message, setMessage] = useState("");
   const [socket, setSocket] = useState("");
   const [messages, setMessages] = useState([]);
+  const UtilCtx = useRef(useContext(Context).util);
 
   const params = useParams();
+  const Navigate = useNavigate();
 
   const validateForm = () => {
     return message.length > 0;
   };
 
+  if (!window.localStorage.getItem("arume-accessToken")) {
+    Navigate("/");
+  }
+
   if (socket) {
     socket.on("messages", (data) => {
-      console.log(data);
-      console.log(params.id);
       if (data.action === "create" && data.communityId === params.id) {
         setMessages([...messages, data.message]);
       }
@@ -27,11 +34,13 @@ const Chat = () => {
   }
 
   useEffect(() => {
-    const tempSocket = openSocket(
-      window.localStorage.getItem("arume-backend-uri")
-    );
+    UtilCtx.current.setAlert({
+      isVisible: true,
+      value: `Entered ${params.id} Community`,
+    });
+    const tempSocket = io(window.localStorage.getItem("arume-backend-uri"));
     setSocket(tempSocket);
-  }, []);
+  }, [params.id]);
 
   const AddMessage = async (e) => {
     e.preventDefault();

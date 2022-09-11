@@ -1,14 +1,17 @@
-import React from "react";
+import React, { useContext } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import Context from "../Context/Context";
 
 const Home = () => {
+  const UtilCtx = useContext(Context).util;
   const [communityId, setCommunityId] = useState("");
   const Navigate = useNavigate();
 
   const ChatRender = async (e) => {
     e.preventDefault();
+    UtilCtx.setLoader(true);
 
     try {
       const data = await axios.post(
@@ -18,14 +21,20 @@ const Home = () => {
         }
       );
       window.localStorage.setItem("arume-accessToken", data.data);
+      UtilCtx.setLoader(false);
       Navigate(`/chat/${communityId}`);
     } catch (e) {
       console.log(e);
+      UtilCtx.setLoader(false);
     }
   };
 
   return (
-    <div className="w-[80vw] max-w-[70rem] flex justify-center items-center h-[calc(100vh-10rem)]">
+    <div className="w-[80vw] max-w-[70rem] flex justify-center items-center h-[calc(100vh-10rem)] flex-col">
+      <p className="max-w-[20rem] text-[0.9rem] w-[85vw] text-center mb-4 text-slate-400">
+        You can Enter a Unique ID to Enter a Room And Chat with anyone who is
+        inside that ID
+      </p>
       <form className="flex flex-col items-center">
         <div className="flex flex-col">
           <label htmlFor="Community">Community</label>

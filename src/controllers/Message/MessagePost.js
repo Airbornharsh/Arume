@@ -9,8 +9,16 @@ const MessagePost = async (req, res) => {
     // });
     // newMessage.save();
 
+    // io.getIO().on("connection", (socket) => {
+    //   socket.broadcast.emit("messages", {
+    //     action: "create",
+    //     communityId: req.community.communityId,
+    //     message: req.body.message,
+    //   });
+    // });
+
     io.getIO().emit("messages", {
-      action: "create",
+      action: "create", 
       communityId: req.community.communityId,
       message: req.body.message,
     });

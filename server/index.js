@@ -20,8 +20,15 @@ app.use("*", (req, res) => {
 
 DbConnect();
 
-app.listen(process.env.PORT, () => {
+const server = app.listen(process.env.PORT, () => {
   console.log(`Server Started at ${process.env.PORT}`);
-
-
 });
+
+const io = require("./socket").init(server);
+const data = io.on("connection", () => {
+  console.log("Client Connected");
+});
+
+// require("./socket").init(data);
+
+// console.log(data);

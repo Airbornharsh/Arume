@@ -1,4 +1,5 @@
 const message = require("../../models/message");
+const io = require("../../../socket");
 
 const MessagePost = async (req, res) => {
   try {
@@ -7,6 +8,8 @@ const MessagePost = async (req, res) => {
       message: req.body.message,
     });
     newMessage.save();
+
+    io.getIO().emit("messages", { action: "create", message: newMessage });
 
     res.send(newMessage);
   } catch (e) {

@@ -5,15 +5,6 @@ const bodyParser = require("body-parser");
 const Router = require("./src/Routes");
 const DbConnect = require("./src/config/Database_config");
 
-// var express = require("express");
-// var app = express();
-// var http = require("http").createServer(app);
-// var io = require("socket.io")(http, {
-//   cors: {
-//     origin: "*",
-//   },
-// });
-
 const app = express();
 app.use(cors());
 
@@ -37,23 +28,30 @@ const io = require("./socket").init(server);
 
 const data = io.on("connection", (socket) => {
   console.log("Client Connected");
-  socket.on("disconnect", () => {
+
+  //Adding Messages
+  socket.on("messageAdd", (messagesData) => {
+    io.emit("messageAdd", messagesData);
+  });
+
+  //Deleting Messages
+  socket.on("messageDelete", (messagesData) => {
+    io.emit("messageDelete", messagesData);
+  });
+
+  socket.on("disconnect", async () => {
     console.log("Client Disconnected");
+
+    // try {
+    //   const clientsNoData = await community.findOne({
+    //     communityId: req.body.communityId,
+    //   });
+
+    //   await community.findByIdAndUpdate(clientsNoData._id, {
+    //     clients: clientsNoData.clients - 1,
+    //   });
+    // } catch (e) {
+    //   console.log(e);
+    // }
   });
 });
-
-// var clients = 0;
-
-// require("./socket").init(io);
-
-// io.on("connect", (socket) => {
-//   console.log("Client Connected");
-
-//   socket.on("disconnect", () => {
-//     console.log("Client Disconnected");
-//   });
-// });
-
-// http.listen(process.env.PORT, () => {
-//   console.log("listening on localhost:4000");
-// });

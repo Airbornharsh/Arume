@@ -5,11 +5,7 @@ const MessageDelete = async (req, res) => {
   try {
     // const Message = await message.findByIdAndDelete(req.params.id);
 
-    getIO().emit("messages", {
-      action: "delete",
-      communityId: req.community.communityId,
-      id: req.params.id,
-    });
+  
 
     res.send({ communityId: req.community.communityId, id: req.params.id });
   } catch (e) {

@@ -12,6 +12,10 @@ const CommunitySchema = new Schema({
     type: Date,
     default: Date.now(),
   },
+  clients: {
+    type: Number,
+    required: true,
+  },
 });
 
 module.exports = mongoose.model("Community", CommunitySchema);

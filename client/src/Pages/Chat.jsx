@@ -1,6 +1,7 @@
 import React from "react";
 import { io } from "socket.io-client";
-import axios from "axios";
+// import axios from "axios";
+import { v1 as uuidv1 } from "uuid";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -27,29 +28,46 @@ const Chat = () => {
   }
 
   if (socket) {
-    socket.on("messages", (data) => {
-      if (data.communityId === params.id) {
-        if (data.action === "create")
-          setMessages([...messages, { message: data.message, id: data.id }]);
-        else if (data.action === "delete") {
-          const tempMessages = [];
-          messages.forEach((tempMessage) => {
-            if (tempMessage.id !== data.id) {
-              tempMessages.push(tempMessage);
-            }
-          });
-          setMessages(tempMessages);
-        }
+    // socket.on("messages", (data) => {
+    //   if (data.communityId === params.id.toLowerCase()) {
+    //     if (data.action === "create")
+    //       setMessages([...messages, { message: data.message, id: data.id }]);
+    //     else if (data.action === "delete") {
+    //       const tempMessages = [];
+    //       messages.forEach((tempMessage) => {
+    //         if (tempMessage.id !== data.id) {
+    //           tempMessages.push(tempMessage);
+    //         }
+    //       });
+    //       setMessages(tempMessages);
+    //     }
+    //   }
+    // });
+
+    socket.on("messageAdd", (data) => {
+      if (data.communityId === params.id.toLowerCase()) {
+        setMessages([...messages, { message: data.message, id: data.id }]);
       }
+    });
+
+    socket.on("messageDelete", (data) => {
+      const tempMessages = [];
+      messages.forEach((tempMessage) => {
+        if (tempMessage.id !== data.id) {
+          tempMessages.push(tempMessage);
+        }
+      });
+      setMessages(tempMessages);
     });
   }
 
   useEffect(() => {
     UtilCtx.current.setAlert({
       isVisible: true,
-      value: `Entered ${params.id} Community`,
+      value: `Entered ${params.id.toLowerCase()} Community`,
     });
     const tempSocket = io(window.localStorage.getItem("arume-backend-uri"));
+
     setSocket(tempSocket);
   }, [params.id]);
 
@@ -57,19 +75,25 @@ const Chat = () => {
     e.preventDefault();
 
     try {
-      await axios.post(
-        `${window.localStorage.getItem("arume-backend-uri")}/message`,
-        {
-          message: message,
-        },
-        {
-          headers: {
-            authorization: `Bearer ${window.localStorage.getItem(
-              "arume-accessToken"
-            )}`,
-          },
-        }
-      );
+      socket.emit("messageAdd", {
+        communityId: params.id.toLowerCase(),
+        message: message,
+        id: uuidv1(),
+      });
+
+      // await axios.post(
+      //   `${window.localStorage.getItem("arume-backend-uri")}/message`,
+      //   {
+      //     message: message,
+      //   },
+      //   {
+      //     headers: {
+      //       authorization: `Bearer ${window.localStorage.getItem(
+      //         "arume-accessToken"
+      //       )}`,
+      //     },
+      //   }
+      // );
 
       setMessage("");
     } catch (e) {
@@ -79,29 +103,26 @@ const Chat = () => {
 
   const DeleteMessage = async (id, message) => {
     try {
-      await axios.delete(
-        `${window.localStorage.getItem("arume-backend-uri")}/message/${id}`,
-        {
-          headers: {
-            authorization: `Bearer ${window.localStorage.getItem(
-              "arume-accessToken"
-            )}`,
-          },
-        }
-      );
+      socket.emit("messageDelete", {
+        communityId: params.id.toLowerCase(),
+        id: id,
+      });
+
+      // await axios.delete(
+      //   `${window.localStorage.getItem("arume-backend-uri")}/message/${id}`,
+      //   {
+      //     headers: {
+      //       authorization: `Bearer ${window.localStorage.getItem(
+      //         "arume-accessToken"
+      //       )}`,
+      //     },
+      //   }
+      // );
 
       UtilCtx.current.setAlert({
         isVisible: true,
         value: `${message} is Deleted`,
       });
-
-      // const tempMessages = [];
-      // messages.forEach((data) => {
-      //   if (data.id !== id) {
-      //     tempMessages.push(data);
-      //   }
-      // });
-      // setMessages(tempMessages);
 
       setMessage("");
     } catch (e) {

@@ -8,7 +8,12 @@ const Joining = async (req, res) => {
     });
 
     if (!tempCommunity[0]) {
-      const newCommunity = new community({ communityId: req.body.communityId });
+      const newCommunity = new community({
+        communityId: req.body.communityId,
+        clients: 1,
+      });
+
+      console.log(newCommunity);
       newCommunity.save();
 
       const token = jwt.sign(
@@ -21,6 +26,14 @@ const Joining = async (req, res) => {
         { communityId: req.body.communityId },
         process.env.JWT_SECRET
       );
+
+      const clientsNoData = await community.findOne({
+        communityId: req.body.communityId,
+      });
+
+      await community.findByIdAndUpdate(clientsNoData._id, {
+        clients: clientsNoData.clients + 1,
+      });
       return res.send(token);
     }
   } catch (e) {

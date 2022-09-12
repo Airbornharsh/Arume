@@ -18,12 +18,27 @@ const MessagePost = async (req, res) => {
     //   });
     // });
 
-    io.getIO().emit("messages", {
-      action: "create",
-      communityId: req.community.communityId,
-      message: req.body.message,
-      id: uuidv1(),
-    });
+    // io.getIO().on("connect", (socket) => {
+    //   console.log("connected Bro");
+
+    //   socket.broadcast.emit("messages", {
+    //     action: "create",
+    //     communityId: req.community.communityId,
+    //     message: req.body.message,
+    //     id: uuidv1(),
+    //   });
+
+    //   socket.on("disconnect", () => {
+    //     console.log("disconnected BRO");
+    //   });
+    // });
+
+    // io.getIO().emit("messages", {
+    //   action: "create",
+    //   communityId: req.community.communityId,
+    //   message: req.body.message,
+    //   id: uuidv1(),
+    // });
 
     res.send(req.body.message);
   } catch (e) {

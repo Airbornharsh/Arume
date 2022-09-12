@@ -1,4 +1,5 @@
 // const message = require("../../models/message");
+const { v1: uuidv1 } = require("uuid");
 const io = require("../../../socket");
 
 const MessagePost = async (req, res) => {
@@ -18,9 +19,10 @@ const MessagePost = async (req, res) => {
     // });
 
     io.getIO().emit("messages", {
-      action: "create", 
+      action: "create",
       communityId: req.community.communityId,
       message: req.body.message,
+      id: uuidv1(),
     });
 
     res.send(req.body.message);

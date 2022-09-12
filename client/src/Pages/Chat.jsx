@@ -7,6 +7,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useContext } from "react";
 import Context from "../Context/Context";
 import { useRef } from "react";
+import { AiFillDelete } from "react-icons/ai";
 
 const Chat = () => {
   const [message, setMessage] = useState("");
@@ -27,8 +28,20 @@ const Chat = () => {
 
   if (socket) {
     socket.on("messages", (data) => {
-      if (data.action === "create" && data.communityId === params.id) {
-        setMessages([...messages, data.message]);
+      console.log(data);
+
+      if (data.communityId === params.id) {
+        if (data.action === "create")
+          setMessages([...messages, { message: data.message, id: data.id }]);
+        else if (data.action === "delete") {
+          const tempMessages = [];
+          messages.forEach((tempMessage) => {
+            if (tempMessage.id !== data.id) {
+              tempMessages.push(data);
+            }
+          });
+          setMessages(tempMessages);
+        }
       }
     });
   }
@@ -66,13 +79,53 @@ const Chat = () => {
     }
   };
 
+  const DeleteMessage = async (id, message) => {
+    try {
+      await axios.delete(
+        `${window.localStorage.getItem("arume-backend-uri")}/message/${id}`,
+        {
+          headers: {
+            authorization: `Bearer ${window.localStorage.getItem(
+              "arume-accessToken"
+            )}`,
+          },
+        }
+      );
+
+      UtilCtx.current.setAlert({
+        isVisible: true,
+        value: `${message} is Deleted`,
+      });
+
+      // const tempMessages = [];
+      // messages.forEach((data) => {
+      //   if (data.id !== id) {
+      //     tempMessages.push(data);
+      //   }
+      // });
+      // setMessages(tempMessages);
+
+      setMessage("");
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   return (
     <div className="relative">
-      <ul className="flex flex-col w-[80vw] h-[calc(100vh-9rem)] overflow-scroll">
-        {messages.map((message, index) => {
+      <ul className="flex flex-col w-[80vw] h-[calc(100vh-9rem)] overflow-scroll relative">
+        {messages.map((data, index) => {
           return (
             <li key={index} className="p-2 pl-4 my-2 rounded-sm bg-slate-600">
-              {message}
+              {data.message}
+              <span
+                className="absolute right-2 hover:text-red-600 transition-none cursor-pointer "
+                onClick={() => {
+                  DeleteMessage(data.id, data.message);
+                }}
+              >
+                <AiFillDelete size={"1.3rem"} />
+              </span>
             </li>
           );
         })}

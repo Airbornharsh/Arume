@@ -28,8 +28,6 @@ const Chat = () => {
 
   if (socket) {
     socket.on("messages", (data) => {
-      console.log(data);
-
       if (data.communityId === params.id) {
         if (data.action === "create")
           setMessages([...messages, { message: data.message, id: data.id }]);
@@ -37,7 +35,7 @@ const Chat = () => {
           const tempMessages = [];
           messages.forEach((tempMessage) => {
             if (tempMessage.id !== data.id) {
-              tempMessages.push(data);
+              tempMessages.push(tempMessage);
             }
           });
           setMessages(tempMessages);
@@ -121,7 +119,8 @@ const Chat = () => {
               <span
                 className="absolute right-2 hover:text-red-600 transition-none cursor-pointer "
                 onClick={() => {
-                  DeleteMessage(data.id, data.message);
+                  const confirmData = window.confirm("Want to Delete");
+                  if (confirmData) DeleteMessage(data.id, data.message);
                 }}
               >
                 <AiFillDelete size={"1.3rem"} />

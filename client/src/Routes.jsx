@@ -7,7 +7,7 @@ const RoutesContainer = () => {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
-      <Route path="/chat/:communityId,:userId" element={<Chat />} />
+      <Route path="/chat/:communityId,:name,:userId" element={<Chat />} />
     </Routes>
   );
 };

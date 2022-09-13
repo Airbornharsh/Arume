@@ -8,15 +8,22 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useContext } from "react";
 import Context from "../Context/Context";
 import { useRef } from "react";
-import { AiFillDelete } from "react-icons/ai";
+// import { AiFillDelete } from "react-icons/ai";
+import { BsFillTriangleFill } from "react-icons/bs";
 
 const Chat = () => {
   const [message, setMessage] = useState("");
   const [socket, setSocket] = useState("");
-  const [messages, setMessages] = useState([]);
+  const params = useParams();
+  const [messages, setMessages] = useState([
+    {
+      message: `Welcome to Arume and You are in ${params.communityId} community`,
+      id: params.communityId,
+      name: "ARUME",
+    },
+  ]);
   const UtilCtx = useRef(useContext(Context).util);
 
-  const params = useParams();
   const Navigate = useNavigate();
 
   const validateForm = () => {
@@ -49,7 +56,12 @@ const Chat = () => {
       if (data.communityId === params.communityId.toLowerCase()) {
         setMessages([
           ...messages,
-          { message: data.message, id: data.id, userId: data.userId },
+          {
+            message: data.message,
+            id: data.id,
+            userId: data.userId,
+            name: data.name,
+          },
         ]);
       }
     });
@@ -84,6 +96,7 @@ const Chat = () => {
         message: message,
         id: uuidv1(),
         userId: params.userId,
+        name: params.name,
       });
 
       // await axios.post(
@@ -106,45 +119,50 @@ const Chat = () => {
     }
   };
 
-  const DeleteMessage = async (id, message) => {
-    try {
-      socket.emit("messageDelete", {
-        communityId: params.communityId.toLowerCase(),
-        id: id,
-      });
+  // const DeleteMessage = async (id, message) => {
+  //   try {
+  //     socket.emit("messageDelete", {
+  //       communityId: params.communityId.toLowerCase(),
+  //       id: id,
+  //     });
 
-      // await axios.delete(
-      //   `${window.localStorage.getItem("arume-backend-uri")}/message/${id}`,
-      //   {
-      //     headers: {
-      //       authorization: `Bearer ${window.localStorage.getItem(
-      //         "arume-accessToken"
-      //       )}`,
-      //     },
-      //   }
-      // );
+  //     // await axios.delete(
+  //     //   `${window.localStorage.getItem("arume-backend-uri")}/message/${id}`,
+  //     //   {
+  //     //     headers: {
+  //     //       authorization: `Bearer ${window.localStorage.getItem(
+  //     //         "arume-accessToken"
+  //     //       )}`,
+  //     //     },
+  //     //   }
+  //     // );
 
-      UtilCtx.current.setAlert({
-        isVisible: true,
-        value: `${message} is Deleted`,
-      });
+  //     UtilCtx.current.setAlert({
+  //       isVisible: true,
+  //       value: `${message} is Deleted`,
+  //     });
 
-      setMessage("");
-    } catch (e) {
-      console.log(e);
-    }
-  };
+  //     setMessage("");
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // };
 
   return (
     <div className="relative">
-      <ul className="flex flex-col w-[80vw] h-[calc(100vh-9rem)] overflow-scroll relative">
+      <ul className="flex flex-col w-[80vw] h-[calc(100vh-9rem)] relative items-center overflow-auto">
         {messages.map((data, index) => {
           console.log(data);
           if (params.userId === data.userId)
             return (
-              <li key={index} className="p-2 pl-4 pr-12 my-2 text-right rounded-sm text-slate-800 bg-slate-300">
-                {data.message}
-                <span
+              <li
+                key={index}
+                className="p-2 pl-4 pr-6 my-2 pt-0 pb-1 text-right rounded-sm text-slate-800 bg-slate-300 w-[97%] mr-2 relative"
+              >
+                <p className="text-[0.7rem] text-slate-400">Me</p>
+                <p>{data.message}</p>
+                <BsFillTriangleFill className="text-slate-300 rotate-[60deg] absolute -top-1 -right-[0.58rem]" />
+                {/* <span
                   className="absolute transition-none cursor-pointer right-2 hover:text-red-600 "
                   onClick={() => {
                     const confirmData = window.confirm("Want to Delete");
@@ -152,13 +170,18 @@ const Chat = () => {
                   }}
                 >
                   <AiFillDelete size={"1.3rem"} />
-                </span>
+                </span> */}
               </li>
             );
           else
             return (
-              <li key={index} className="p-2 pl-4 my-2 rounded-sm bg-slate-600">
-                {data.message}
+              <li
+                key={index}
+                className="p-2 pl-4 my-2 pt-0 pb-1 rounded-sm bg-slate-600 w-[97.4%] ml-2 relative"
+              >
+                <p className="text-[0.7rem] text-slate-400">{data.name}</p>
+                <p>{data.message}</p>
+                <BsFillTriangleFill className="text-slate-600 rotate-[60deg] absolute -top-1 -left-[0.38rem]" />
               </li>
             );
         })}

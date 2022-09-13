@@ -159,15 +159,6 @@ const Chat = () => {
             return (
               <li key={index} className="p-2 pl-4 my-2 rounded-sm bg-slate-600">
                 {data.message}
-                <span
-                  className="absolute transition-none cursor-pointer right-2 hover:text-red-600 "
-                  onClick={() => {
-                    const confirmData = window.confirm("Want to Delete");
-                    if (confirmData) DeleteMessage(data.id, data.message);
-                  }}
-                >
-                  <AiFillDelete size={"1.3rem"} />
-                </span>
               </li>
             );
         })}

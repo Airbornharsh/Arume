@@ -11,59 +11,89 @@
   width: 0;
 }
 
-.centered{
-	filter: blur(10px) contrast(20);
+.centered {
+  filter: blur(10px) contrast(20);
 }
 
-.blob-1,.blob-2{
-	width:3rem;
-	height:3rem;
-	position:absolute;
-	background:#fff;
-	border-radius:50%;
-	top:50%;left:50%;
-	transform:translate(-50%,-50%);
+.blob-1,
+.blob-2 {
+  width: 3rem;
+  height: 3rem;
+  position: absolute;
+  background: #fff;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
-.blob-1{
-	left:35%;
-	animation:osc-l 2.5s ease infinite;
+.blob-1 {
+  left: 35%;
+  animation: osc-l 2.5s ease infinite;
 }
-.blob-2{
-	left:65%;
-	animation:osc-r 2.5s ease infinite;
-	background:#0ff;
+.blob-2 {
+  left: 65%;
+  animation: osc-r 2.5s ease infinite;
+  background: #0ff;
 }
-@keyframes osc-l{
-	0%{left:35%;}
-	50%{left:50%;}
-	100%{left:35%;}
+@keyframes osc-l {
+  0% {
+    left: 35%;
+  }
+  50% {
+    left: 50%;
+  }
+  100% {
+    left: 35%;
+  }
 }
-@keyframes osc-r{
-	0%{left:65%;}
-	50%{left:50%;}
-	100%{left:65%;}
+@keyframes osc-r {
+  0% {
+    left: 65%;
+  }
+  50% {
+    left: 50%;
+  }
+  100% {
+    left: 65%;
+  }
 }
 
 .custom-file-input::-webkit-file-upload-button {
-	visibility: hidden;
-  }
-  .custom-file-input::before {
-	content: '';
-	display: inline-block;
-	/* border: 1px solid #999; */
-	border-radius: 3px;
-	padding: 5px 8px;
-	outline: none;
-	white-space: nowrap;
-	-webkit-user-select: none;
-	cursor: pointer;
-	/* text-shadow: 1px 1px #fff; */
-	font-weight: 700;
-	font-size: 10pt;
-  }
-  .custom-file-input:hover::before {
-	border-color: black;
-  }
-  .custom-file-input:active::before {
-	background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9);
-  }
+  visibility: hidden;
+}
+.custom-file-input::before {
+  content: "";
+  display: inline-block;
+  /* border: 1px solid #999; */
+  border-radius: 3px;
+  padding: 5px 8px;
+  outline: none;
+  white-space: nowrap;
+  -webkit-user-select: none;
+  cursor: pointer;
+  /* text-shadow: 1px 1px #fff; */
+  font-weight: 700;
+  font-size: 10pt;
+}
+.custom-file-input:hover::before {
+  border-color: black;
+}
+.custom-file-input:active::before {
+  background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9);
+}
+
+.nameColor1 {
+  color: #14d6d6;
+}
+.nameColor2 {
+  color: #11cf3d;
+}
+.nameColor3 {
+  color: #87c728;
+}
+.nameColor4 {
+  color: #e0e80c;
+}
+.nameColor5 {
+  color: #11cfbc;
+}

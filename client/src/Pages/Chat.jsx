@@ -20,6 +20,7 @@ const Chat = () => {
       message: `Welcome to Arume and You are in ${params.communityId} community`,
       id: params.communityId,
       name: "ARUME",
+      nameColor: 1,
     },
   ]);
   const UtilCtx = useRef(useContext(Context).util);
@@ -61,6 +62,7 @@ const Chat = () => {
             id: data.id,
             userId: data.userId,
             name: data.name,
+            nameColor: data.nameColor,
           },
         ]);
       }
@@ -100,12 +102,15 @@ const Chat = () => {
     e.preventDefault();
 
     try {
+      const random = Math.ceil(Math.random() * 5);
+
       socket.emit("messageAdd", {
         communityId: params.communityId.toLowerCase(),
         message: message,
         id: uuidv1(),
         userId: params.userId,
         name: params.name,
+        nameColor: random,
       });
 
       // await axios.post(
@@ -142,17 +147,20 @@ const Chat = () => {
                 id={data.id}
               />
             );
-          else
+          else {
             return (
               <li
                 key={index}
                 className="p-2 pl-4 my-2 pt-0 pb-1 rounded-sm bg-slate-600 w-[97.4%] ml-2 relative"
               >
-                <p className="text-[0.7rem] text-slate-400">{data.name}</p>
+                <p className={`text-[0.7rem] nameColor${data.nameColor}`}>
+                  {data.name}
+                </p>
                 <p>{data.message}</p>
                 <BsFillTriangleFill className="text-slate-600 rotate-[60deg] absolute -top-1 -left-[0.38rem]" />
               </li>
             );
+          }
         })}
       </ul>
       <form className="flex items-center fixed bottom-10 left-[50%] translate-x-[-50%] w-[90vw] max-w-[25rem]">

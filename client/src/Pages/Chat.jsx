@@ -8,8 +8,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useContext } from "react";
 import Context from "../Context/Context";
 import { useRef } from "react";
-// import { AiFillDelete } from "react-icons/ai";
 import { BsFillTriangleFill } from "react-icons/bs";
+import Message from "../Components/Chat/Message";
 
 const Chat = () => {
   const [message, setMessage] = useState("");
@@ -75,6 +75,13 @@ const Chat = () => {
       });
       setMessages(tempMessages);
     });
+
+    socket.on("connectionRender", (data) => {
+      UtilCtx.current.setAlert({
+        isVisible: true,
+        value: `${data.name} Joined`,
+      });
+    });
   }
 
   useEffect(() => {
@@ -84,8 +91,10 @@ const Chat = () => {
     });
     const tempSocket = io(window.localStorage.getItem("arume-backend-uri"));
 
+    tempSocket.emit("connectionRender", { name: params.name });
+
     setSocket(tempSocket);
-  }, [params.communityId]);
+  }, [params.communityId, params.name]);
 
   const AddMessage = async (e) => {
     e.preventDefault();
@@ -119,59 +128,19 @@ const Chat = () => {
     }
   };
 
-  // const DeleteMessage = async (id, message) => {
-  //   try {
-  //     socket.emit("messageDelete", {
-  //       communityId: params.communityId.toLowerCase(),
-  //       id: id,
-  //     });
-
-  //     // await axios.delete(
-  //     //   `${window.localStorage.getItem("arume-backend-uri")}/message/${id}`,
-  //     //   {
-  //     //     headers: {
-  //     //       authorization: `Bearer ${window.localStorage.getItem(
-  //     //         "arume-accessToken"
-  //     //       )}`,
-  //     //     },
-  //     //   }
-  //     // );
-
-  //     UtilCtx.current.setAlert({
-  //       isVisible: true,
-  //       value: `${message} is Deleted`,
-  //     });
-
-  //     setMessage("");
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
-
   return (
     <div className="relative">
       <ul className="flex flex-col w-[80vw] h-[calc(100vh-9rem)] relative items-center overflow-auto">
         {messages.map((data, index) => {
-          console.log(data);
           if (params.userId === data.userId)
             return (
-              <li
-                key={index}
-                className="p-2 pl-4 pr-6 my-2 pt-0 pb-1 text-right rounded-sm text-slate-800 bg-slate-300 w-[97%] mr-2 relative"
-              >
-                <p className="text-[0.7rem] text-slate-400">Me</p>
-                <p>{data.message}</p>
-                <BsFillTriangleFill className="text-slate-300 rotate-[60deg] absolute -top-1 -right-[0.58rem]" />
-                {/* <span
-                  className="absolute transition-none cursor-pointer right-2 hover:text-red-600 "
-                  onClick={() => {
-                    const confirmData = window.confirm("Want to Delete");
-                    if (confirmData) DeleteMessage(data.id, data.message);
-                  }}
-                >
-                  <AiFillDelete size={"1.3rem"} />
-                </span> */}
-              </li>
+              <Message
+                message={data.message}
+                index={index}
+                communityId={params.communityId.toLowerCase()}
+                socket={socket}
+                id={data.id}
+              />
             );
           else
             return (

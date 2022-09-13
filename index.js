@@ -26,17 +26,21 @@ const server = app.listen(process.env.PORT, () => {
 
 const io = require("./socket").init(server);
 
-const data = io.on("connection", (socket) => {
+io.on("connection", (socket) => {
   console.log("Client Connected");
 
   //Adding Messages
-  socket.on("messageAdd", (messagesData) => {
-    io.emit("messageAdd", messagesData);
+  socket.on("messageAdd", (data) => {
+    io.emit("messageAdd", data);
   });
 
   //Deleting Messages
-  socket.on("messageDelete", (messagesData) => {
-    io.emit("messageDelete", messagesData);
+  socket.on("messageDelete", (data) => {
+    io.emit("messageDelete", data);
+  });
+
+  socket.on("connectionRender", (data) => {
+    io.emit("connectionRender", data);
   });
 
   socket.on("disconnect", async () => {

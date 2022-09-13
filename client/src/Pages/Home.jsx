@@ -28,7 +28,11 @@ const Home = () => {
       );
       window.localStorage.setItem("arume-accessToken", data.data);
       UtilCtx.setLoader(false);
-      Navigate(`/chat/${communityId},${name},${uuidv1() + uuidv4()}`);
+      Navigate(
+        `/chat/${communityId.toLowerCase().trim()},${name},${
+          uuidv1() + uuidv4()
+        }`
+      );
     } catch (e) {
       console.log(e);
       UtilCtx.setLoader(false);

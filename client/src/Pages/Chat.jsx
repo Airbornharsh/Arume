@@ -1,7 +1,7 @@
 import React from "react";
 import { io } from "socket.io-client";
-// import axios from "axios";
 import { v1 as uuidv1 } from "uuid";
+// import axios from "axios";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -45,8 +45,12 @@ const Chat = () => {
     // });
 
     socket.on("messageAdd", (data) => {
-      if (data.communityId === params.id.toLowerCase()) {
-        setMessages([...messages, { message: data.message, id: data.id }]);
+      // console.log(data);
+      if (data.communityId === params.communityId.toLowerCase()) {
+        setMessages([
+          ...messages,
+          { message: data.message, id: data.id, userId: data.userId },
+        ]);
       }
     });
 
@@ -64,21 +68,22 @@ const Chat = () => {
   useEffect(() => {
     UtilCtx.current.setAlert({
       isVisible: true,
-      value: `Entered ${params.id.toLowerCase()} Community`,
+      value: `Entered ${params.communityId.toLowerCase()} Community`,
     });
     const tempSocket = io(window.localStorage.getItem("arume-backend-uri"));
 
     setSocket(tempSocket);
-  }, [params.id]);
+  }, [params.communityId]);
 
   const AddMessage = async (e) => {
     e.preventDefault();
 
     try {
       socket.emit("messageAdd", {
-        communityId: params.id.toLowerCase(),
+        communityId: params.communityId.toLowerCase(),
         message: message,
         id: uuidv1(),
+        userId: params.userId,
       });
 
       // await axios.post(
@@ -104,7 +109,7 @@ const Chat = () => {
   const DeleteMessage = async (id, message) => {
     try {
       socket.emit("messageDelete", {
-        communityId: params.id.toLowerCase(),
+        communityId: params.communityId.toLowerCase(),
         id: id,
       });
 
@@ -134,20 +139,37 @@ const Chat = () => {
     <div className="relative">
       <ul className="flex flex-col w-[80vw] h-[calc(100vh-9rem)] overflow-scroll relative">
         {messages.map((data, index) => {
-          return (
-            <li key={index} className="p-2 pl-4 my-2 rounded-sm bg-slate-600">
-              {data.message}
-              <span
-                className="absolute right-2 hover:text-red-600 transition-none cursor-pointer "
-                onClick={() => {
-                  const confirmData = window.confirm("Want to Delete");
-                  if (confirmData) DeleteMessage(data.id, data.message);
-                }}
-              >
-                <AiFillDelete size={"1.3rem"} />
-              </span>
-            </li>
-          );
+          console.log(data);
+          if (params.userId === data.userId)
+            return (
+              <li key={index} className="p-2 pl-4 pr-12 my-2 text-right rounded-sm text-slate-800 bg-slate-300">
+                {data.message}
+                <span
+                  className="absolute transition-none cursor-pointer right-2 hover:text-red-600 "
+                  onClick={() => {
+                    const confirmData = window.confirm("Want to Delete");
+                    if (confirmData) DeleteMessage(data.id, data.message);
+                  }}
+                >
+                  <AiFillDelete size={"1.3rem"} />
+                </span>
+              </li>
+            );
+          else
+            return (
+              <li key={index} className="p-2 pl-4 my-2 rounded-sm bg-slate-600">
+                {data.message}
+                <span
+                  className="absolute transition-none cursor-pointer right-2 hover:text-red-600 "
+                  onClick={() => {
+                    const confirmData = window.confirm("Want to Delete");
+                    if (confirmData) DeleteMessage(data.id, data.message);
+                  }}
+                >
+                  <AiFillDelete size={"1.3rem"} />
+                </span>
+              </li>
+            );
         })}
       </ul>
       <form className="flex items-center fixed bottom-10 left-[50%] translate-x-[-50%] w-[90vw] max-w-[25rem]">

@@ -1,4 +1,5 @@
 import React, { useContext } from "react";
+import { v1 as uuidv1, v4 as uuidv4 } from "uuid";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -22,7 +23,7 @@ const Home = () => {
       );
       window.localStorage.setItem("arume-accessToken", data.data);
       UtilCtx.setLoader(false);
-      Navigate(`/chat/${communityId}`);
+      Navigate(`/chat/${communityId},${uuidv1() + uuidv4()}`);
     } catch (e) {
       console.log(e);
       UtilCtx.setLoader(false);

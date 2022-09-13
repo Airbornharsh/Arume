@@ -10,8 +10,8 @@ function App() {
 
   window.localStorage.setItem(
     "arume-backend-uri",
-    "https://arume.herokuapp.com"
-    // "http://localhost:4000"
+    // "https://arume.herokuapp.com"
+    "http://localhost:4000"
   );
 
   return (

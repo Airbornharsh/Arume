@@ -15,85 +15,45 @@
   filter: blur(10px) contrast(20);
 }
 
-.blob-1,
-.blob-2 {
-  width: 3rem;
-  height: 3rem;
-  position: absolute;
-  background: #fff;
-  border-radius: 50%;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-.blob-1 {
-  left: 35%;
-  animation: osc-l 2.5s ease infinite;
-}
-.blob-2 {
-  left: 65%;
-  animation: osc-r 2.5s ease infinite;
-  background: #0ff;
-}
-@keyframes osc-l {
-  0% {
-    left: 35%;
-  }
-  50% {
-    left: 50%;
-  }
-  100% {
-    left: 35%;
-  }
-}
-@keyframes osc-r {
-  0% {
-    left: 65%;
-  }
-  50% {
-    left: 50%;
-  }
-  100% {
-    left: 65%;
-  }
+.loader {
+  transition: none;
+  font-weight: 700;
+  text-align: center;
+  font-size: 40px;
+  font-family: Hack, sans-serif;
+  text-transform: uppercase;
+  background: linear-gradient(90deg, #197f9e, rgb(36, 163, 169), #197f9e);
+  letter-spacing: 5px;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-repeat: no-repeat;
+  background-size: 80%;
+  animation: shine 3s linear infinite;
+  position: relative;
 }
 
-.custom-file-input::-webkit-file-upload-button {
-  visibility: hidden;
-}
-.custom-file-input::before {
-  content: "";
-  display: inline-block;
-  /* border: 1px solid #999; */
-  border-radius: 3px;
-  padding: 5px 8px;
-  outline: none;
-  white-space: nowrap;
-  -webkit-user-select: none;
-  cursor: pointer;
-  /* text-shadow: 1px 1px #fff; */
-  font-weight: 700;
-  font-size: 10pt;
-}
-.custom-file-input:hover::before {
-  border-color: black;
-}
-.custom-file-input:active::before {
-  background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9);
+@keyframes shine {
+  0% {
+    background-position-x: -500%;
+  }
+  100% {
+    background-position-x: 500%;
+  }
 }
 
 .nameColor1 {
-  color: #14d6d6;
+  color: #d65114;
 }
 .nameColor2 {
-  color: #11cf3d;
+  color: #cf11cf;
 }
 .nameColor3 {
   color: #87c728;
 }
 .nameColor4 {
-  color: #e0e80c;
+  color: #e80c0c;
 }
 .nameColor5 {
-  color: #11cfbc;
+  color: #14cf11;
 }

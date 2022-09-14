@@ -1,5 +1,4 @@
 import { useContext } from "react";
-import NavBar from "./Layout/NavBar";
 import RoutesContainer from "./Routes";
 import Loader from "./Utils/Loader";
 import Context from "./Context/Context";
@@ -15,10 +14,9 @@ function App() {
   );
 
   return (
-    <div className="flex flex-col items-center w-screen h-screen bg-slate-900 text-slate-200">
+    <div className="flex flex-col items-center w-screen h-screen bg-slate-50 text-slate-800">
       {UtilCtx.loader && <Loader />}
       {UtilCtx.alert.isVisible && <Alert />}
-      <NavBar />
       <RoutesContainer />
     </div>
   );

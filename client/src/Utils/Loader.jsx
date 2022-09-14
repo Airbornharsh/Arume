@@ -2,9 +2,10 @@ import React from "react";
 
 const Loader = () => {
   return (
-    <div className="fixed z-20 flex items-center justify-center w-screen h-screen bg-slate-900 centered ">
-      <div className="blob-1"></div>
-      <div className="blob-2"></div>
+    <div className="fixed top-0 left-0 z-40 flex items-center justify-center w-screen h-screen bg-slate-200 ">
+      <p className="flex items-center justify-center loader">
+        Joining...
+      </p>
     </div>
   );
 };

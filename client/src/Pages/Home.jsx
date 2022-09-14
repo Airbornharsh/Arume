@@ -4,6 +4,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Context from "../Context/Context";
+import NavBar from "../Layout/NavBar";
 
 const Home = () => {
   const UtilCtx = useContext(Context).util;
@@ -40,44 +41,46 @@ const Home = () => {
   };
 
   return (
-    <div className="w-[80vw] max-w-[70rem] flex justify-center items-center h-[calc(100vh-10rem)] flex-col">
-      <p className="max-w-[20rem] text-[0.9rem] w-[85vw] text-center mb-4 text-slate-400">
-        You can Enter a Unique ID to Enter a Room And Chat with anyone who is
-        inside that ID. Choose Any Nickname For Yourself.
-      </p>
-      <form className="flex flex-col items-center">
-        <div className="flex flex-col">
-          <label htmlFor="name">Name</label>
-          <input
-            type={"text"}
-            value={name}
-            onChange={(e) => {
-              setName(e.target.value);
-            }}
-            className="h-8 max-w-[20rem] text-[0.9rem] w-[85vw] text-slate-600 px-2 mb-4"
-            placeholder="Enter any Name"
-            autoFocus
-          />
-          <label htmlFor="Community">Community</label>
-          <input
-            type={"text"}
-            value={communityId}
-            onChange={(e) => {
-              setCommunityId(e.target.value);
-            }}
-            className="h-8 max-w-[20rem] text-[0.9rem] w-[85vw] text-slate-600 px-2"
-            placeholder="Enter Your Community"
-            autoFocus
-          />
-        </div>
-        <button
-          className="bg-slate-300 text-slate-700 px-3 h-8 max-w-[5rem] rounded-sm mt-2"
-          onClick={ChatRender}
-          disabled={!validateForm()}
-        >
-          Enter
-        </button>
-      </form>
+    <div>
+      <NavBar heading={"ARUME"} />
+      <div className="w-[80vw] max-w-[70rem] flex justify-center items-center h-[calc(100vh-10rem)] flex-col">
+        <p className="max-w-[20rem] text-[0.9rem] w-[85vw] text-center mb-4 text-slate-700">
+          You can Enter a Unique ID to Enter a Room And Chat with anyone who is
+          inside that ID. Choose Any Nickname For Yourself.
+        </p>
+        <form className="flex flex-col items-center">
+          <div className="flex flex-col">
+            <label htmlFor="name">Name</label>
+            <input
+              type={"text"}
+              value={name}
+              onChange={(e) => {
+                setName(e.target.value);
+              }}
+              className="h-8 max-w-[20rem] text-[0.9rem] w-[85vw] text-slate-600 px-2 mb-4 bg-slate-200"
+              placeholder="Enter any Name"
+              autoFocus
+            />
+            <label htmlFor="Community">Community</label>
+            <input
+              type={"text"}
+              value={communityId}
+              onChange={(e) => {
+                setCommunityId(e.target.value);
+              }}
+              className="h-8 max-w-[20rem] text-[0.9rem] w-[85vw] text-slate-600 px-2 bg-slate-200"
+              placeholder="Enter Your Community"
+            />
+          </div>
+          <button
+            className="bg-slate-800 text-slate-300 px-3 h-8 max-w-[5rem] rounded-md mt-3"
+            onClick={ChatRender}
+            disabled={!validateForm()}
+          >
+            Enter
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

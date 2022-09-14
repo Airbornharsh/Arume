@@ -12,8 +12,8 @@ const Alert = (props) => {
   }, []);
 
   return (
-    <div className="fixed w-screen ">
-      <span className="max-w-[15rem] w-[80vw] rounded px-3 py-3 bg-slate-600 translate-x-[-50%] left-[50%] fixed top-0 font-semibold ">
+    <div className="fixed z-30 w-screen">
+      <span className="max-w-[15rem] w-[80vw] rounded px-3 py-3 bg-Color1 translate-x-[-50%] left-[50%] fixed top-0 font-semibold  text-slate-200">
         {UtilCtx.current.alert.value}
       </span>
     </div>

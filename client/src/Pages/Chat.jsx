@@ -8,8 +8,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useContext } from "react";
 import Context from "../Context/Context";
 import { useRef } from "react";
-import { BsFillTriangleFill } from "react-icons/bs";
 import Message from "../Components/Chat/Message";
+import NavBar from "../Layout/NavBar";
 
 const Chat = () => {
   const [message, setMessage] = useState("");
@@ -17,7 +17,7 @@ const Chat = () => {
   const params = useParams();
   const [messages, setMessages] = useState([
     {
-      message: `Welcome to Arume and You are in ${params.communityId} community`,
+      message: `Welcome to Arume`,
       id: params.communityId,
       name: "ARUME",
       nameColor: 1,
@@ -79,6 +79,7 @@ const Chat = () => {
     });
 
     socket.on("connectionRender", (data) => {
+      setMessages([...messages, { for: "joining", name: data.name }]);
       UtilCtx.current.setAlert({
         isVisible: true,
         value: `${data.name} Joined`,
@@ -135,8 +136,14 @@ const Chat = () => {
 
   return (
     <div className="relative">
+      <NavBar heading={`${params.communityId} Community`} />
       <ul className="flex flex-col w-[80vw] h-[calc(100vh-9rem)] relative items-center overflow-auto">
         {messages.map((data, index) => {
+          if (data.for === "joining")
+            return (
+              <li className="w-[100%] ml-4 py-2">{`${data.name} just Joined`}</li>
+            );
+
           if (params.userId === data.userId)
             return (
               <Message
@@ -149,15 +156,13 @@ const Chat = () => {
             );
           else {
             return (
-              <li
-                key={index}
-                className="p-2 pl-4 my-2 pt-0 pb-1 rounded-sm bg-slate-600 w-[97.4%] ml-2 relative"
-              >
+              <li key={index} className="\ w-[100%]">
                 <p className={`text-[0.7rem] nameColor${data.nameColor}`}>
                   {data.name}
                 </p>
-                <p>{data.message}</p>
-                <BsFillTriangleFill className="text-slate-600 rotate-[60deg] absolute -top-1 -left-[0.38rem]" />
+                <div className=" w-[100%] rounded-tl-none bg-Color1 rounded-2xl rounded-r-md p-3 pl-4">
+                  <p className="text-slate-200">{data.message}</p>
+                </div>
               </li>
             );
           }
@@ -170,12 +175,12 @@ const Chat = () => {
           onChange={(e) => {
             setMessage(e.target.value);
           }}
-          className="h-8 max-w-[20rem] text-[0.9rem] w-[85vw] text-slate-600 px-2"
+          className="h-8 max-w-[20rem] text-[0.9rem] w-[85vw] text-slate-600 bg-slate-200 px-2"
           placeholder="Enter Your Message"
           autoFocus
         />
         <button
-          className="bg-slate-300 text-slate-700 px-3 h-8 max-w-[5rem] rounded-sm "
+          className="bg-Color1 text-slate-200 px-3 h-8 max-w-[5rem] rounded-sm "
           onClick={AddMessage}
           disabled={!validateForm()}
         >

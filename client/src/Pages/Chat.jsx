@@ -63,6 +63,7 @@ const Chat = () => {
             userId: data.userId,
             name: data.name,
             nameColor: data.nameColor,
+            date: data.date,
           },
         ]);
       }
@@ -94,7 +95,9 @@ const Chat = () => {
     });
     const tempSocket = io(window.localStorage.getItem("arume-backend-uri"));
 
-    tempSocket.emit("connectionRender", { name: params.name });
+    tempSocket.emit("connectionRender", {
+      name: params.name,
+    });
 
     setSocket(tempSocket);
   }, [params.communityId, params.name]);
@@ -112,6 +115,7 @@ const Chat = () => {
         userId: params.userId,
         name: params.name,
         nameColor: random,
+        date: Date.now(),
       });
 
       // await axios.post(
@@ -139,9 +143,13 @@ const Chat = () => {
       <NavBar heading={`${params.communityId} Community`} />
       <ul className="flex flex-col w-[80vw] h-[calc(100vh-9rem)] relative items-center overflow-auto">
         {messages.map((data, index) => {
+          let time;
+          if (data.date) {
+            time = new Date(data.date).toString().split(" ")[4];
+          }
           if (data.for === "joining")
             return (
-              <li className="w-[100%] ml-4 py-2">{`${data.name} just Joined`}</li>
+              <li className="w-[100%] ml-4 py-2 text-slate-500">{`${data.name} just Joined`}</li>
             );
 
           if (params.userId === data.userId)
@@ -152,16 +160,22 @@ const Chat = () => {
                 communityId={params.communityId.toLowerCase()}
                 socket={socket}
                 id={data.id}
+                time={time}
               />
             );
           else {
             return (
               <li key={index} className="\ w-[100%]">
-                <p className={`text-[0.7rem] nameColor${data.nameColor}`}>
-                  {data.name}
-                </p>
+                <span className="flex">
+                  <p
+                    className={`text-[0.7rem] ml-1 nameColor${data.nameColor}`}
+                  >
+                    {data.name}
+                  </p>
+                  <p className={`text-[0.7rem] ml-2 text-slate-400`}>{time}</p>
+                </span>
                 <div className=" w-[100%] rounded-tl-none bg-Color1 rounded-2xl rounded-r-md p-3 pl-4">
-                  <p className="text-slate-200">{data.message}</p>
+                  <p className="text-slate-100">{data.message}</p>
                 </div>
               </li>
             );

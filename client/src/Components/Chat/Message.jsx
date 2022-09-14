@@ -54,19 +54,22 @@ const Message = (props) => {
       onMouseLeave={ToggleMessageInfo}
       onClick={ToggleMessageInfo}
     >
-      <p className="text-[0.7rem]  text-blue-500">You</p>
-      <div className=" w-[100%] rounded-tr-none bg-slate-300 rounded-2xl rounded-l-md p-3 pl-4">
+      <div className="flex justify-end">
+        <p className="text-[0.7rem] mr-2 text-blue-500">You </p>
+        <p className="text-[0.7rem] mr-1 text-slate-400">{props.time}</p>
+      </div>
+      <div className=" w-[100%] rounded-tr-none  bg-slate-300 rounded-2xl rounded-l-md p-3 pl-4">
         <p>{props.message}</p>
         {isInfo && (
           <span className="absolute w-[6rem] text-[0.7rem] top-10 right-0 z-10">
             <button
-              className="w-[100%]  bg-slate-500 py-[0.4rem] border-b-[0.05rem] border-slate-900"
+              className="w-[100%]  bg-slate-400 py-[0.4rem] border-b-[0.05rem] border-slate-900"
               onClick={CopyToClipboard}
             >
               Copy
             </button>
             <button
-              className="w-[100%]  bg-slate-500 py-[0.4rem] border-b-[0.05rem] border-slate-900"
+              className="w-[100%]  bg-slate-400 py-[0.4rem] border-b-[0.05rem] border-slate-900"
               onClick={() => {
                 DeleteMessage(props.id, props.message);
               }}

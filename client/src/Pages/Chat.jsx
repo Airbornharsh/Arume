@@ -1,6 +1,6 @@
 import React from "react";
 import { io } from "socket.io-client";
-import { v1 as uuidv1 } from "uuid";
+// import { v1 as uuidv1 } from "uuid";
 // import axios from "axios";
 import { useState } from "react";
 import { useEffect } from "react";
@@ -10,9 +10,9 @@ import Context from "../Context/Context";
 import { useRef } from "react";
 import Message from "../Components/Chat/Message";
 import NavBar from "../Layout/NavBar";
+import MessageAddForm from "../Components/Chat/MessageAddForm";
 
 const Chat = () => {
-  const [message, setMessage] = useState("");
   const [socket, setSocket] = useState("");
   const params = useParams();
   const [messages, setMessages] = useState([
@@ -27,31 +27,31 @@ const Chat = () => {
 
   const Navigate = useNavigate();
 
-  const validateForm = () => {
-    return message.length > 0;
-  };
-
   if (!window.localStorage.getItem("arume-accessToken")) {
     Navigate("/");
   }
 
-  if (socket) {
-    // socket.on("messages", (data) => {
-    //   if (data.communityId === params.id.toLowerCase()) {
-    //     if (data.action === "create")
-    //       setMessages([...messages, { message: data.message, id: data.id }]);
-    //     else if (data.action === "delete") {
-    //       const tempMessages = [];
-    //       messages.forEach((tempMessage) => {
-    //         if (tempMessage.id !== data.id) {
-    //           tempMessages.push(tempMessage);
-    //         }
-    //       });
-    //       setMessages(tempMessages);
-    //     }
-    //   }
-    // });
+  // const NotificationFn = (data) => {
+  //   let notification;
 
+  //   if (!("Notification" in window)) {
+  //     alert("Does Not Support Notifacation in Browser");
+  //   } else if (Notification.permission === "granted") {
+  //     notification = new Notification(data);
+  //   } else {
+  //     Notification.requestPermission().then((permission) => {
+  //       if (permission === "granted") {
+  //         notification = new Notification(data);
+  //       }
+  //     });
+  //   }
+
+  //   // notification.close();
+
+  //   console.log(notification);
+  // };
+
+  if (socket) {
     socket.on("messageAdd", (data) => {
       // console.log(data);
       if (data.communityId === params.communityId.toLowerCase()) {
@@ -85,6 +85,7 @@ const Chat = () => {
         isVisible: true,
         value: `${data.name} Joined`,
       });
+      // NotificationFn(`${data.name} Joined `);
     });
   }
 
@@ -101,42 +102,6 @@ const Chat = () => {
 
     setSocket(tempSocket);
   }, [params.communityId, params.name]);
-
-  const AddMessage = async (e) => {
-    e.preventDefault();
-
-    try {
-      const random = Math.ceil(Math.random() * 5);
-
-      socket.emit("messageAdd", {
-        communityId: params.communityId.toLowerCase(),
-        message: message,
-        id: uuidv1(),
-        userId: params.userId,
-        name: params.name,
-        nameColor: random,
-        date: Date.now(),
-      });
-
-      // await axios.post(
-      //   `${window.localStorage.getItem("arume-backend-uri")}/message`,
-      //   {
-      //     message: message,
-      //   },
-      //   {
-      //     headers: {
-      //       authorization: `Bearer ${window.localStorage.getItem(
-      //         "arume-accessToken"
-      //       )}`,
-      //     },
-      //   }
-      // );
-
-      setMessage("");
-    } catch (e) {
-      console.log(e);
-    }
-  };
 
   return (
     <div className="relative">
@@ -182,25 +147,12 @@ const Chat = () => {
           }
         })}
       </ul>
-      <form className="flex items-center fixed bottom-10 left-[50%] translate-x-[-50%] w-[90vw] max-w-[25rem]">
-        <input
-          type={"text"}
-          value={message}
-          onChange={(e) => {
-            setMessage(e.target.value);
-          }}
-          className="h-8 max-w-[20rem] text-[0.9rem] w-[85vw] text-slate-600 bg-slate-200 px-2"
-          placeholder="Enter Your Message"
-          autoFocus
-        />
-        <button
-          className="bg-Color1 text-slate-200 px-3 h-8 max-w-[5rem] rounded-sm "
-          onClick={AddMessage}
-          disabled={!validateForm()}
-        >
-          Send
-        </button>
-      </form>
+      <MessageAddForm
+        socket={socket}
+        communityId={params.communityId.toLowerCase()}
+        userId={params.userId}
+        name={params.name}
+      />
     </div>
   );
 };

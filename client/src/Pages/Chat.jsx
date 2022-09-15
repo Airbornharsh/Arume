@@ -31,44 +31,27 @@ const Chat = () => {
     Navigate("/");
   }
 
-  // const NotificationFn = (data) => {
-  //   let notification;
+  const NotificationFn = (data) => {
+    let notification;
 
-  //   if (!("Notification" in window)) {
-  //     alert("Does Not Support Notifacation in Browser");
-  //   } else if (Notification.permission === "granted") {
-  //     notification = new Notification(data);
-  //   } else {
-  //     Notification.requestPermission().then((permission) => {
-  //       if (permission === "granted") {
-  //         notification = new Notification(data);
-  //       }
-  //     });
-  //   }
+    if (!("Notification" in window)) {
+      alert("Does Not Support Notifacation in Browser");
+    } else if (Notification.permission === "granted") {
+      notification = new Notification(data);
+    } else {
+      Notification.requestPermission().then((permission) => {
+        if (permission === "granted") {
+          notification = new Notification(data);
+        }
+      });
+    }
 
-  //   // notification.close();
+    // notification.close();
 
-  //   console.log(notification);
-  // };
+    console.log(notification);
+  };
 
   if (socket) {
-    socket.on("messageAdd", (data) => {
-      // console.log(data);
-      if (data.communityId === params.communityId.toLowerCase()) {
-        setMessages([
-          ...messages,
-          {
-            message: data.message,
-            id: data.id,
-            userId: data.userId,
-            name: data.name,
-            nameColor: data.nameColor,
-            date: data.date,
-          },
-        ]);
-      }
-    });
-
     socket.on("messageDelete", (data) => {
       const tempMessages = [];
       messages.forEach((tempMessage) => {
@@ -77,15 +60,6 @@ const Chat = () => {
         }
       });
       setMessages(tempMessages);
-    });
-
-    socket.on("connectionRender", (data) => {
-      setMessages([...messages, { for: "joining", name: data.name }]);
-      UtilCtx.current.setAlert({
-        isVisible: true,
-        value: `${data.name} Joined`,
-      });
-      // NotificationFn(`${data.name} Joined `);
     });
   }
 
@@ -98,54 +72,88 @@ const Chat = () => {
 
     tempSocket.emit("connectionRender", {
       name: params.name,
+      userId: params.userId.toLowerCase(),
+    });
+
+    tempSocket.on("messageAdd", (data) => {
+      console.log(data);
+      if (data.communityId === params.communityId.toLowerCase()) {
+        setMessages((temp) => [
+          ...temp,
+          {
+            message: data.message,
+            id: data.id,
+            userId: data.userId,
+            name: data.name,
+            nameColor: data.nameColor,
+            date: data.date,
+          },
+        ]);
+
+        if (data.userId !== params.userId.toLowerCase())
+          NotificationFn(`${data.message} By ${data.name}`);
+      }
+    });
+
+    tempSocket.on("connectionRender", (data) => {
+      setMessages((temp) => [...temp, { for: "joining", name: data.name }]);
+      UtilCtx.current.setAlert({
+        isVisible: true,
+        value: `${data.name} Joined`,
+      });
+      if (data.userId !== params.userId.toLowerCase())
+        NotificationFn(`${data.name} Joined `);
     });
 
     setSocket(tempSocket);
-  }, [params.communityId, params.name]);
+  }, [params.communityId, params.name, params.userId]);
 
   return (
     <div className="relative">
       <NavBar heading={`${params.communityId} Community`} />
       <ul className="flex flex-col w-[80vw] h-[calc(100vh-9rem)] relative items-center overflow-auto">
-        {messages.map((data, index) => {
-          let time;
-          if (data.date) {
-            time = new Date(data.date).toString().split(" ")[4];
-          }
-          if (data.for === "joining")
-            return (
-              <li className="w-[100%] ml-4 py-2 text-slate-500">{`${data.name} just Joined`}</li>
-            );
+        {messages &&
+          messages.map((data, index) => {
+            let time;
+            if (data.date) {
+              time = new Date(data.date).toString().split(" ")[4];
+            }
+            if (data.for === "joining")
+              return (
+                <li className="w-[100%] ml-4 py-2 text-slate-500">{`${data.name} just Joined`}</li>
+              );
 
-          if (params.userId === data.userId)
-            return (
-              <Message
-                message={data.message}
-                index={index}
-                communityId={params.communityId.toLowerCase()}
-                socket={socket}
-                id={data.id}
-                time={time}
-              />
-            );
-          else {
-            return (
-              <li key={index} className="\ w-[100%]">
-                <span className="flex">
-                  <p
-                    className={`text-[0.7rem] ml-1 nameColor${data.nameColor}`}
-                  >
-                    {data.name}
-                  </p>
-                  <p className={`text-[0.7rem] ml-2 text-slate-400`}>{time}</p>
-                </span>
-                <div className=" w-[100%] rounded-tl-none bg-Color1 rounded-2xl rounded-r-md p-3 pl-4">
-                  <p className="text-slate-100">{data.message}</p>
-                </div>
-              </li>
-            );
-          }
-        })}
+            if (params.userId === data.userId)
+              return (
+                <Message
+                  message={data.message}
+                  index={index}
+                  communityId={params.communityId.toLowerCase()}
+                  socket={socket}
+                  id={data.id}
+                  time={time}
+                />
+              );
+            else {
+              return (
+                <li key={index} className="\ w-[100%]">
+                  <span className="flex">
+                    <p
+                      className={`text-[0.7rem] ml-1 nameColor${data.nameColor}`}
+                    >
+                      {data.name}
+                    </p>
+                    <p className={`text-[0.7rem] ml-2 text-slate-400`}>
+                      {time}
+                    </p>
+                  </span>
+                  <div className=" w-[100%] rounded-tl-none bg-Color1 rounded-2xl rounded-r-md p-3 pl-4">
+                    <p className="text-slate-100">{data.message}</p>
+                  </div>
+                </li>
+              );
+            }
+          })}
       </ul>
       <MessageAddForm
         socket={socket}
